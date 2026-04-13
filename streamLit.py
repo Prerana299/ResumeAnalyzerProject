@@ -1,3 +1,8 @@
+import streamlit as st
+import pdfplumber
+import pandas as pd
+import matplotlib.pyplot as plt
+
 st.sidebar.title("Smart Resume Analyzer")
 page = st.sidebar.selectbox("Select Option", ["Upload Resume", "View Database"])
 
@@ -53,3 +58,6 @@ elif page == "View Database":
         st.pyplot(fig)
     else:
         st.info("No data yet")
+
+# ❌ SYNTAX ERROR HERE
+print("App Finished")
