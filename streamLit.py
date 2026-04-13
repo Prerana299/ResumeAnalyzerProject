@@ -57,7 +57,5 @@ elif page == "View Database":
         ax.bar(top5['name'], top5[col])
         st.pyplot(fig)
     else:
-        st.info("No data yet")
 
-# ❌ SYNTAX ERROR HERE
 print("App Finished")
