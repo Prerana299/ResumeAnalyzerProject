@@ -2,7 +2,46 @@ import streamlit as st
 import pdfplumber
 import pandas as pd
 import matplotlib.pyplot as plt
+import sqlite3
 
+# ------------------ DATABASE SETUP ------------------
+conn = sqlite3.connect("resumes.db")
+c = conn.cursor()
+
+c.execute('''CREATE TABLE IF NOT EXISTS resumes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT,
+    email TEXT,
+    phone TEXT,
+    skills TEXT,
+    data_engineer_score INTEGER,
+    software_developer_score INTEGER,
+    data_scientist_score INTEGER,
+    machine_engineer_score INTEGER,
+    best_role TEXT
+)''')
+conn.commit()
+
+# ------------------ DUMMY FUNCTIONS ------------------
+def extract_info(text):
+    return "Name", "email@example.com", "1234567890", ["Python", "SQL"]
+
+def calculate_scores(skills):
+    return {
+        "Data Engineer": 70,
+        "Software Developer": 80,
+        "Data Scientist": 60,
+        "Machine Engineer": 75
+    }
+
+role_skills = {
+    "Data Engineer": [],
+    "Software Developer": [],
+    "Data Scientist": [],
+    "Machine Engineer": []
+}
+
+# ------------------ UI ------------------
 st.sidebar.title("Smart Resume Analyzer")
 page = st.sidebar.selectbox("Select Option", ["Upload Resume", "View Database"])
 
@@ -15,7 +54,7 @@ if page == "Upload Resume":
         if uploaded_file.type == "application/pdf":
             with pdfplumber.open(uploaded_file) as pdf:
                 for page in pdf.pages:
-                    text += page.extract_text()
+                    text += page.extract_text() or ""   # FIX
         else:
             text = str(uploaded_file.read(), 'utf-8')
 
@@ -57,4 +96,4 @@ elif page == "View Database":
         ax.bar(top5['name'], top5[col])
         st.pyplot(fig)
     else:
-        print("App Finished")
+        st.write("App Finished")
