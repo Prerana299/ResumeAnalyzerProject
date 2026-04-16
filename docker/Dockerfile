@@ -5,8 +5,15 @@ WORKDIR /build
 
 COPY requirements.txt .
 
+# install everything into SAME environment (IMPORTANT FIX)
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir --prefix=/install -r requirements.txt
+
+# install spaCy into same prefix
+RUN pip install --no-cache-dir --prefix=/install spacy
+
+# use correct python from install prefix
+RUN /install/bin/python -m spacy download en_core_web_sm
 
 # install spaCy in same environment
 RUN pip install --no-cache-dir --prefix=/install spacy
