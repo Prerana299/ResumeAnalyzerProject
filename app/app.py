@@ -4,8 +4,9 @@ Run: streamlit run app/app.py
 """
 
 import streamlit as st
-from parser import extract_text, parse_resume
+
 from database import init_db, save_result
+from parser import extract_text, parse_resume
 
 # ── Page config ──────────────────────────────────────────────────────────────
 st.set_page_config(

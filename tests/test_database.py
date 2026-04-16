@@ -6,9 +6,11 @@ Run: pytest tests/
 
 import sys
 import os
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "app"))
 
 import pytest
+
 os.environ["DATABASE_URL"] = "sqlite:///:memory:"
 
 import database as db
@@ -24,13 +26,19 @@ def fresh_db():
 class TestInitDb:
     def test_tables_created(self):
         from sqlalchemy import inspect
+
         inspector = inspect(db.engine)
         assert "resume_results" in inspector.get_table_names()
 
 
 class TestSaveResult:
     def test_save_and_retrieve(self):
-        payload = {"name": "Alice", "email": "alice@test.com", "skills": ["python"], "score": 50}
+        payload = {
+            "name": "Alice",
+            "email": "alice@test.com",
+            "skills": ["python"],
+            "score": 50,
+        }
         db.save_result(payload)
         results = db.get_all_results()
         assert len(results) == 1
@@ -43,7 +51,9 @@ class TestSaveResult:
         assert len(db.get_all_results()) == 2
 
     def test_skills_stored_as_string(self):
-        db.save_result({"name": "X", "email": "", "skills": ["python", "sql"], "score": 20})
+        db.save_result(
+            {"name": "X", "email": "", "skills": ["python", "sql"], "score": 20}
+        )
         result = db.get_all_results()[0]
         assert "python" in result["skills"]
         assert "sql" in result["skills"]

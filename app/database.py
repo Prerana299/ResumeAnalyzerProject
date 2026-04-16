@@ -1,42 +1,67 @@
-import sqlite3
+"""
+Database layer — SQLite (dev) / PostgreSQL (prod) via SQLAlchemy.
+"""
 
-def connect_db():
-    return sqlite3.connect('resumes.db')
+import os
+from datetime import datetime
 
-def create_table(conn):
-    c = conn.cursor()
+from sqlalchemy import Column, DateTime, Integer, String, Text, create_engine
+from sqlalchemy.orm import DeclarativeBase, Session
 
-    c.execute('''
-        CREATE TABLE IF NOT EXISTS resumes (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT,
-        email TEXT,
-        phone TEXT,
-        skills TEXT,
-        data_engineer_score REAL,
-        software_developer_score REAL,
-        data_scientist_score REAL,
-        machine_engineer_score REAL,
-        best_role TEXT
-    )
-    ''')
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./resume_analyzer.db")
+engine = create_engine(
+    DATABASE_URL,
+    connect_args={"check_same_thread": False} if "sqlite" in DATABASE_URL else {},
+)
 
-    conn.commit()
 
-role_skills = {
-    'Data Engineer': ['python', 'sql', 'hadoop', 'spark', 'aws', 'etl', 'big data'],
-    'Software Developer': ['java', 'python', 'c++', 'git', 'html', 'css', 'javascript'],
-    'Data Scientist': ['python', 'machine learning', 'deep learning', 'statistics', 'pandas', 'numpy', 'matplotlib'],
-    'Machine Engineer': ['c++', 'python', 'arduino', 'robotics', 'mechanical engineering']
-}
+class Base(DeclarativeBase):
+    pass
 
-# 🔴 ERROR: Variable name typo - 'conn' vs 'connn'
-connn = connect_db()  # Misspelled variable name
-create_table(connn)   # Using wrong variable name
-c = connn.cursor()    # This will work but wrong name
 
-# 🔴 ERROR: Using undefined variable later
-print(some_undefined_variable)  # NameError
+class ResumeResult(Base):
+    __tablename__ = "resume_results"
 
-# 🔴 ERROR: Division by zero in score calculation
-test_score = 100 / 0  # ZeroDivisionError
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(200))
+    email = Column(String(200))
+    skills = Column(Text)  # comma-separated list
+    score = Column(Integer)
+    analyzed_at = Column(DateTime, default=datetime.utcnow)
+
+
+def init_db() -> None:
+    """Create all tables if they don't exist."""
+    Base.metadata.create_all(bind=engine)
+
+
+def save_result(result: dict) -> None:
+    """Persist a parsed resume result to the database."""
+    with Session(engine) as session:
+        record = ResumeResult(
+            name=result.get("name", ""),
+            email=result.get("email", ""),
+            skills=", ".join(result.get("skills", [])),
+            score=result.get("score", 0),
+        )
+        session.add(record)
+        session.commit()
+
+
+def get_all_results() -> list[dict]:
+    """Return all stored results as a list of dicts."""
+    with Session(engine) as session:
+        rows = (
+            session.query(ResumeResult).order_by(ResumeResult.analyzed_at.desc()).all()
+        )
+        return [
+            {
+                "id": r.id,
+                "name": r.name,
+                "email": r.email,
+                "skills": r.skills,
+                "score": r.score,
+                "analyzed_at": str(r.analyzed_at),
+            }
+            for r in rows
+        ]

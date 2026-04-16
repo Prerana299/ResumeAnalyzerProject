@@ -1,0 +1,47 @@
+[MAIN]
+py-version = 3.10
+# Resolve local imports (app/ modules import each other without package prefix)
+init-hook = "import sys; sys.path.insert(0, 'app')"
+# Tell pylint these are local modules, not stdlib/third-party
+known-third-party = streamlit,fitz,spacy,docx,sqlalchemy
+known-standard-library =
+# pylint 2.x crashes inferring these third-party packages — skip them
+ignored-modules =
+    sqlalchemy,
+    sqlalchemy.orm,
+    fitz,
+    spacy,
+    docx,
+    streamlit
+
+[MESSAGES CONTROL]
+disable =
+    # Too strict for small projects
+    missing-module-docstring,
+    too-few-public-methods,
+    missing-class-docstring,
+    # Conflicts with black formatting
+    C0301,
+    # Allow broad exceptions in app code
+    broad-exception-caught,
+    # 'parser' name shadows stdlib — known, not changing the filename now
+    deprecated-module,
+    # Local imports resolved via init-hook above
+    import-error,
+    # parser.py name clashes with deprecated stdlib 'parser' module — false positive
+    wrong-import-order,
+    # False positive — raw_text is a local variable, not a module constant
+    invalid-name
+
+[FORMAT]
+max-line-length = 88
+indent-string = "    "
+
+[DESIGN]
+max-args = 8
+max-attributes = 10
+
+[SIMILARITIES]
+min-similarity-lines = 6
+ignore-docstrings = yes
+ignore-comments = yes

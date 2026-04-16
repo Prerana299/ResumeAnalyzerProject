@@ -5,6 +5,7 @@ Run: pytest tests/
 
 import sys
 import os
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "app"))
 
 from parser import _extract_email, _extract_skills, _score, parse_resume
@@ -12,7 +13,10 @@ from parser import _extract_email, _extract_skills, _score, parse_resume
 
 class TestExtractEmail:
     def test_valid_email(self):
-        assert _extract_email("contact me at john@example.com please") == "john@example.com"
+        assert (
+            _extract_email("contact me at john@example.com please")
+            == "john@example.com"
+        )
 
     def test_no_email(self):
         assert _extract_email("no email here") == ""
