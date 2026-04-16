@@ -10,3 +10,8 @@ sqlalchemy>=2.0.0
 # Testing
 pytest>=8.0.0
 selenium>=4.21.0
+
+# Linting & formatting
+flake8>=7.0.0
+pylint>=3.0.0
+black>=24.0.0
