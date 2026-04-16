@@ -57,5 +57,4 @@ elif page == "View Database":
         ax.bar(top5['name'], top5[col])
         st.pyplot(fig)
     else:
-
-print("App Finished")
+        print("App Finished")
