@@ -1,8 +1,11 @@
 streamlit>=1.35.0
 PyMuPDF>=1.24.0
 python-docx>=1.1.0
+pdfplumber>=0.11.0
+
 spacy==3.7.5
 thinc>=8.2.2,<8.3.0
+
 sqlalchemy>=2.0.0
 pytest>=8.0.0
 selenium>=4.21.0
@@ -12,5 +15,5 @@ flake8>=7.0.0
 pylint>=3.0.0
 black>=24.0.0
 
-# spaCy English model (IMPORTANT: avoids docker download step failure)
+# spaCy English model
 en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.1/en_core_web_sm-3.7.1-py3-none-any.whl
