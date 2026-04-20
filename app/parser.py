@@ -83,7 +83,7 @@ def _extract_name(doc) -> str:
 
 
 def _extract_email(text: str) -> str:
-    match = re.search(r"[\w.+-]+@[\w-]+\.[a-zA-Z]{2,}", text)
+    match = re.search(r"[\w.+-]+@(?:[\w-]+\.)+[a-zA-Z]{2,}", text)
     return match.group(0) if match else ""
 
 
