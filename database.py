@@ -2,14 +2,16 @@ import sqlite3
 
 DB_NAME = "resumes.db"
 
+
 def connect_db():
     return sqlite3.connect(DB_NAME, check_same_thread=False)
+
 
 def init_db():
     conn = connect_db()
     c = conn.cursor()
 
-    c.execute('''
+    c.execute("""
         CREATE TABLE IF NOT EXISTS resumes (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT,
@@ -22,7 +24,7 @@ def init_db():
             machine_engineer_score REAL,
             best_role TEXT
         )
-    ''')
+    """)
 
     conn.commit()
     conn.close()
@@ -32,7 +34,8 @@ def save_result(name, email, phone, skills, scores, best_role):
     conn = connect_db()
     c = conn.cursor()
 
-    c.execute('''
+    c.execute(
+        """
         INSERT INTO resumes (
             name, email, phone, skills,
             data_engineer_score, software_developer_score,
@@ -40,17 +43,19 @@ def save_result(name, email, phone, skills, scores, best_role):
             best_role
         )
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-    ''', (
-        name,
-        email,
-        phone,
-        ', '.join(skills),
-        scores['Data Engineer'],
-        scores['Software Developer'],
-        scores['Data Scientist'],
-        scores['Machine Engineer'],
-        best_role
-    ))
+    """,
+        (
+            name,
+            email,
+            phone,
+            ", ".join(skills),
+            scores["Data Engineer"],
+            scores["Software Developer"],
+            scores["Data Scientist"],
+            scores["Machine Engineer"],
+            best_role,
+        ),
+    )
 
     conn.commit()
     conn.close()
@@ -69,8 +74,15 @@ def fetch_all():
 
 # Skill mapping
 role_skills = {
-    'Data Engineer': ['python', 'sql', 'hadoop', 'spark', 'aws', 'etl', 'big data'],
-    'Software Developer': ['java', 'python', 'c++', 'git', 'html', 'css', 'javascript'],
-    'Data Scientist': ['python', 'machine learning', 'deep learning', 'statistics', 'pandas', 'numpy'],
-    'Machine Engineer': ['c++', 'python', 'arduino', 'robotics', 'mechanical']
+    "Data Engineer": ["python", "sql", "hadoop", "spark", "aws", "etl", "big data"],
+    "Software Developer": ["java", "python", "c++", "git", "html", "css", "javascript"],
+    "Data Scientist": [
+        "python",
+        "machine learning",
+        "deep learning",
+        "statistics",
+        "pandas",
+        "numpy",
+    ],
+    "Machine Engineer": ["c++", "python", "arduino", "robotics", "mechanical"],
 }

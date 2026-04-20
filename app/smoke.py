@@ -1,1 +1,1 @@
-print('build ok')
+print("build ok")

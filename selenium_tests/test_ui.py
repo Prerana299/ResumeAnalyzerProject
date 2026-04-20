@@ -32,9 +32,7 @@ def driver():
 class TestHomePage:
     def test_page_title(self, driver):
         driver.get(BASE_URL)
-        WebDriverWait(driver, TIMEOUT).until(
-            EC.title_contains("Smart Resume Analyzer")
-        )
+        WebDriverWait(driver, TIMEOUT).until(EC.title_contains("Smart Resume Analyzer"))
         assert "Smart Resume Analyzer" in driver.title
 
     def test_upload_widget_present(self, driver):
