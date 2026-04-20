@@ -30,4 +30,4 @@ COPY . .
 EXPOSE 8000
 
 # Command to run the application
-CMD ["python", "app/main.py"]
+CMD ["streamlit", "run", "app/streamLit.py", "--server.port=8000", "--server.address=0.0.0.0"]
