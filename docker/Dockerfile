@@ -20,9 +20,6 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
     pip install --no-cache-dir -r requirements.txt
 
-# NOW download the spaCy model (after spacy is installed via requirements.txt)
-RUN python -m spacy download en_core_web_sm
-
 # Copy the rest of the application code
 COPY . .
 
