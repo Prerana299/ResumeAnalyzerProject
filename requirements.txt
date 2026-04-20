@@ -1,19 +1,26 @@
 streamlit>=1.35.0
+
+pdfplumber>=0.11.0
 PyMuPDF>=1.24.0
 python-docx>=1.1.0
-pdfplumber>=0.11.0
+
+pandas>=2.0.0
+matplotlib>=3.8.0
 
 spacy==3.7.5
 thinc>=8.2.2,<8.3.0
 
 sqlalchemy>=2.0.0
+
 pytest>=8.0.0
+
+# Only keep selenium if actually used in code
 selenium>=4.21.0
 
-# Linting & formatting
+# Dev tools (optional for Jenkins, safe to keep)
 flake8>=7.0.0
 pylint>=3.0.0
 black>=24.0.0
 
-# spaCy English model
+# spaCy model (prevents Docker runtime download failure)
 en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.1/en_core_web_sm-3.7.1-py3-none-any.whl
