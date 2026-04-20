@@ -1,31 +1,33 @@
-FROM python:3.11-slim AS builder
+# Use a slim Python image
+FROM python:3.9-slim
 
-WORKDIR /build
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 
-COPY requirements.txt .
-
-RUN pip install --upgrade pip && \
-    pip install --no-cache-dir --prefix=/install -r requirements.txt
-
-# install spaCy model correctly
-RUN python -m spacy download en_core_web_sm
-
-
-FROM python:3.11-slim
-
+# Set work directory
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+# Install ONLY necessary system dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    curl \
+    git \
+    && rm -rf /var/lib/apt/lists/*
 
-COPY --from=builder /install /usr/local
+# Copy requirements and install
+COPY requirements.txt .
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
+# NOW download the spaCy model (after spacy is installed via requirements.txt)
+RUN python -m spacy download en_core_web_sm
+
+# Copy the rest of the application code
 COPY . .
 
-EXPOSE 8501
+# Expose port
+EXPOSE 8000
 
-HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
-    CMD curl -f http://localhost:8501/_stcore/health || exit 1
-
-ENTRYPOINT ["streamlit", "run", "app/app.py"]
-
-CMD ["--server.port=8501", "--server.address=0.0.0.0", "--server.headless=true"]
+# Command to run the application
+CMD ["python", "app/main.py"]
