@@ -15,8 +15,8 @@ engine = create_engine(
 )
 
 
-class Base(DeclarativeBase):
-    pass
+# class Base(DeclarativeBase):
+#     pass
 
 
 class ResumeResult(Base):
